@@ -56,10 +56,10 @@ public class CBWebkitBridge: NSObject, WKScriptMessageHandler {
         jsonStr = jsonStr.replacingOccurrences(of: "\n", with: "\\n")
         jsonStr = jsonStr.replacingOccurrences(of: "\r", with: "\\r")
         jsonStr = jsonStr.replacingOccurrences(of: #"\f"#, with: #"\\f"#)
-        jsonStr = jsonStr.replacingOccurrences(of: #"\u2028"#, with: #"\\u2028"#)
-        jsonStr = jsonStr.replacingOccurrences(of: #"\u2029"#, with: #"\\u2029"#)
+        jsonStr = jsonStr.replacingOccurrences(of: #"\u{2028}"#, with: #"\\u{2028}"#)
+        jsonStr = jsonStr.replacingOccurrences(of: #"\u{2029}"#, with: #"\\u{2029}"#)
 
-        let js = "cbWebKitBridge.dispatch(`\(jsonStr)`)";
+        let js = "cbWebKitBridge.dispatch('\(jsonStr)')";
         webview.evaluateJavaScript(js, completionHandler: nil);
     }
     
