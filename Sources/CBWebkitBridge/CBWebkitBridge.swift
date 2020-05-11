@@ -48,7 +48,6 @@ public class CBWebkitBridge: NSObject, WKScriptMessageHandler {
     
     public func dispatchToJs(msg: CBWBMessage) {
         let js = "cbWebKitBridge.dispatch(`\(msg.description)`)";
-        print("js", js)
         webview.evaluateJavaScript(js, completionHandler: nil);
     }
     
