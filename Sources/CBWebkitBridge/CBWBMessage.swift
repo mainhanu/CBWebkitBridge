@@ -11,19 +11,19 @@ import SwiftyJSON
 typealias CBWBResponseCallback = (_ error: CBWBError?, _ result: JSON?) -> Void
 typealias CBWBHandler = (_ data: JSON?, _ callback: @escaping CBWBResponseCallback) -> Void
 
-enum CBWBMessageType {
+public enum CBWBMessageType {
     case response
     case handler
 }
 
-struct CBWBMessage: CustomStringConvertible {
+public struct CBWBMessage: CustomStringConvertible {
     var type: CBWBMessageType
     var handlerName: String?;
     var data: JSON;
     var callbackId: String?;
     var responseId: String?;
     
-    var description: String {
+    public var description: String {
         var result = JSON();
         result["handlerName"].string = handlerName;
         result["callbackId"].string = callbackId;
@@ -33,7 +33,7 @@ struct CBWBMessage: CustomStringConvertible {
         return result.rawString([.castNilToNSNull: true])!
     }
     
-    init(type: CBWBMessageType, handlerName: String?, data: JSON, callbackId: String?, responseId: String?) {
+    public init(type: CBWBMessageType, handlerName: String?, data: JSON, callbackId: String?, responseId: String?) {
         self.type = type;
         self.handlerName = handlerName;
         self.data = data;
@@ -42,7 +42,7 @@ struct CBWBMessage: CustomStringConvertible {
     }
     
     // init from message body
-    init?(body: Any) {
+    public init?(body: Any) {
         guard let bodtStr = body as? String else {
             return nil;
         }
@@ -69,7 +69,7 @@ struct CBWBMessage: CustomStringConvertible {
         self.init(type: type, handlerName: handlerName, data: data, callbackId: callbackId, responseId: responseId)
     }
     
-    func toString() -> [String: Any?] {
+    public func toString() -> [String: Any?] {
         let val: [String: Any?] = [
             "handlerName": self.handlerName,
             "data": self.data,

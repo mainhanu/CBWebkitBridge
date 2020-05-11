@@ -6,13 +6,13 @@
 //  Copyright © 2019 mxc. All rights reserved.
 //
 
-enum CBWBError: Error, CustomStringConvertible {
+public enum CBWBError: Error, CustomStringConvertible {
   case invalidParam
   case noNativeHandler(String)
   case noJsHandler(String)
   case common(message: String)
   
-  init(error: String) {
+  public init(error: String) {
     var message = "";
     var data = "";
     
@@ -36,11 +36,11 @@ enum CBWBError: Error, CustomStringConvertible {
     }
   }
   
-  func toString() -> String {
+  public func toString() -> String {
     return self.description
   }
   
-  var description: String {
+  public var description: String {
     switch self {
     case .invalidParam:
       return "invalidParam"

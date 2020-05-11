@@ -9,7 +9,7 @@
 import WebKit
 import SwiftyJSON
 
-class CBWebkitBridge: NSObject, WKScriptMessageHandler {
+public class CBWebkitBridge: NSObject, WKScriptMessageHandler {
     let webview: WKWebView!
     var messageHandlers: [String: CBWBHandler] = [:]
     var responseCallbacks: [String: CBWBResponseCallback] = [:];
@@ -17,13 +17,13 @@ class CBWebkitBridge: NSObject, WKScriptMessageHandler {
     var scrpitmessagename = "__cbwbjsmessagehandler__";
     var isDebug = true;
     
-    init(webview: WKWebView) {
+    public init(webview: WKWebView) {
         self.webview = webview;
         super.init();
         self.config(userContentController: self.webview.configuration.userContentController);
     }
     
-    func config(userContentController: WKUserContentController) {
+    public func config(userContentController: WKUserContentController) {
         let bridgejs = CBWebkitBridge.jsScript;
         let userscript = WKUserScript(source: bridgejs, injectionTime: .atDocumentStart, forMainFrameOnly: true);
         
@@ -31,11 +31,11 @@ class CBWebkitBridge: NSObject, WKScriptMessageHandler {
         userContentController.add(self, name: scrpitmessagename);
     }
     
-    func register(name: String, handler: @escaping CBWBHandler) {
+    public func register(name: String, handler: @escaping CBWBHandler) {
         self.messageHandlers[name] = handler;
     }
     
-    func call(name: String, data: JSON, callback: CBWBResponseCallback?) {
+    public func call(name: String, data: JSON, callback: CBWBResponseCallback?) {
         var callbackId: String? = nil;
         if let callback = callback {
             self.uniqueId += 1;
@@ -46,13 +46,13 @@ class CBWebkitBridge: NSObject, WKScriptMessageHandler {
         self.dispatchToJs(msg: msg);
     }
     
-    func dispatchToJs(msg: CBWBMessage) {
+    public func dispatchToJs(msg: CBWBMessage) {
         let js = "cbWebKitBridge.dispatch(`\(msg.description)`)";
         print("js", js)
         webview.evaluateJavaScript(js, completionHandler: nil);
     }
     
-    func log(_ message: Any...) {
+    public func log(_ message: Any...) {
         if !isDebug {
             return;
         };
@@ -60,7 +60,7 @@ class CBWebkitBridge: NSObject, WKScriptMessageHandler {
     }
     
     // MARK: - WKScriptMessageHandler
-    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+    public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         if message.name != scrpitmessagename {
             log("receive invalid WKScriptMessage, name: \(message.name)")
             return;

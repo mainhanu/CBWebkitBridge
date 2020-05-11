@@ -9,7 +9,7 @@
 import Foundation
 
 extension CBWebkitBridge {
-static let jsScript = """
+public static let jsScript = """
 "use strict";
 
 (function() {
