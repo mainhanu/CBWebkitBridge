@@ -8,8 +8,8 @@
 
 import SwiftyJSON
 
-typealias CBWBResponseCallback = (_ error: CBWBError?, _ result: JSON?) -> Void
-typealias CBWBHandler = (_ data: JSON?, _ callback: @escaping CBWBResponseCallback) -> Void
+public typealias CBWBResponseCallback = (_ error: CBWBError?, _ result: JSON?) -> Void
+public typealias CBWBHandler = (_ data: JSON?, _ callback: @escaping CBWBResponseCallback) -> Void
 
 public enum CBWBMessageType {
     case response
