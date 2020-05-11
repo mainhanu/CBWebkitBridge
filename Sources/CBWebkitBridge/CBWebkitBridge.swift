@@ -47,7 +47,19 @@ public class CBWebkitBridge: NSObject, WKScriptMessageHandler {
     }
     
     public func dispatchToJs(msg: CBWBMessage) {
-        let js = "cbWebKitBridge.dispatch(`\(msg.description)`)";
+        var jsonStr = msg.description;
+
+        // 防止 json 传输过程问题
+        jsonStr = jsonStr.replacingOccurrences(of: "\\", with: "\\\\")
+        jsonStr = jsonStr.replacingOccurrences(of: "\"", with: "\\\"")
+        jsonStr = jsonStr.replacingOccurrences(of: "\'", with: "\\\'")
+        jsonStr = jsonStr.replacingOccurrences(of: "\n", with: "\\n")
+        jsonStr = jsonStr.replacingOccurrences(of: "\r", with: "\\r")
+        jsonStr = jsonStr.replacingOccurrences(of: #"\f"#, with: #"\\f"#)
+        jsonStr = jsonStr.replacingOccurrences(of: #"\u2028"#, with: #"\\u2028"#)
+        jsonStr = jsonStr.replacingOccurrences(of: #"\u2029"#, with: #"\\u2029"#)
+
+        let js = "cbWebKitBridge.dispatch(`\(jsonStr)`)";
         webview.evaluateJavaScript(js, completionHandler: nil);
     }
     
