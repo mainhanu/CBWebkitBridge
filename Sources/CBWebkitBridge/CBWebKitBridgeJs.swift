@@ -42,7 +42,7 @@ public static let jsScript = """
     dispatch(msgStr) {
       let msg
       try {
-        msg = JSON.parse(msgStr);
+        msg = JSON.parse(decodeURIComponent(msgStr));
       } catch(e) {
         this.log(`[invalid json msg from native]${e.message}`);
         return;
