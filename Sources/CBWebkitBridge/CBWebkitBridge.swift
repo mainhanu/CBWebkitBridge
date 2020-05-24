@@ -57,15 +57,14 @@ public class CBWebkitBridge: NSObject, WKScriptMessageHandler {
         // 防止 json 传输过程问题
         var jsonStr = json;
 
-        // jsonStr = jsonStr.replacingOccurrences(of: "\\", with: "\\\\")
-        // jsonStr = jsonStr.replacingOccurrences(of: "\"", with: "\\\"")
-        // jsonStr = jsonStr.replacingOccurrences(of: "\'", with: "\\\'")
-        // jsonStr = jsonStr.replacingOccurrences(of: "\n", with: "\\n")
-        // jsonStr = jsonStr.replacingOccurrences(of: "\r", with: "\\r")
-        // jsonStr = jsonStr.replacingOccurrences(of: #"\f"#, with: #"\\f"#)
-        // jsonStr = jsonStr.replacingOccurrences(of: "\u{2028}", with: "\\u{2028}")
-        // jsonStr = jsonStr.replacingOccurrences(of: "\u{2029}", with: "\\u{2029}")
-        jsonStr = jsonStr.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!;
+        jsonStr = jsonStr.replacingOccurrences(of: "\\", with: "\\\\")
+        jsonStr = jsonStr.replacingOccurrences(of: "\"", with: "\\\"")
+        jsonStr = jsonStr.replacingOccurrences(of: "\'", with: "\\\'")
+        jsonStr = jsonStr.replacingOccurrences(of: "\n", with: "\\n")
+        jsonStr = jsonStr.replacingOccurrences(of: "\r", with: "\\r")
+        jsonStr = jsonStr.replacingOccurrences(of: #"\f"#, with: #"\\f"#)
+        jsonStr = jsonStr.replacingOccurrences(of: "\u{2028}", with: "\\u{2028}")
+        jsonStr = jsonStr.replacingOccurrences(of: "\u{2029}", with: "\\u{2029}")
 
         return jsonStr;
     }
