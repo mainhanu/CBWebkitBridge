@@ -85,6 +85,7 @@ public static let jsScript = """
     }
     log(...params) {
       if (!this.isDebug) return;
+      console.log(...params);
     }
   };
 
