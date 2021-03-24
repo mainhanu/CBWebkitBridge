@@ -18,7 +18,7 @@ public static let jsScript = """
       this.messageHandlers = {};
       this.responseCallbacks = {};
       this.uniqueId = 0;
-      this.isDebug = false;
+      this.isDebug = true;
     }
     register(name, handle) {
       this.messageHandlers[name] = handle;
@@ -42,7 +42,7 @@ public static let jsScript = """
     dispatch(msgStr) {
       let msg
       try {
-        msg = JSON.parse(msgStr);
+        msg = JSON.parse(atob(decodeURIComponent(msgStr)));
       } catch(e) {
         this.log(`[invalid json msg from native]${e.message}`);
         return;
