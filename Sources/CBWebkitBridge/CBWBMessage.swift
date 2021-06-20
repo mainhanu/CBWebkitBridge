@@ -92,7 +92,7 @@ public struct CBWBMessage: CustomStringConvertible {
     jsonStr = jsonStr.replacingOccurrences(of: "\n", with: "\\n")
     jsonStr = jsonStr.replacingOccurrences(of: "\r", with: "\\r")
     jsonStr = jsonStr.replacingOccurrences(of: "\t", with: "\\t")
-    jsonStr = jsonStr.replacingOccurrences(of: "\u{8}", with: "\\u{8}")
+    jsonStr = jsonStr.replacingOccurrences(of: "\u{8}", with: "\\b")
 //    jsonStr = jsonStr.replacingOccurrences(of: #"\f"#, with: #"\\f"#)
 //    jsonStr = jsonStr.replacingOccurrences(of: "\u{2028}", with: "\\u{2028}")
 //    jsonStr = jsonStr.replacingOccurrences(of: "\u{2029}", with: "\\u{2029}")
