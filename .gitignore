@@ -91,3 +91,8 @@ iOSInjectionProject/
 
 .DS_Store
 .swiftpm
+
+## js
+node_modules
+yarn.lock
+/js/dist
