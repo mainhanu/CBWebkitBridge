@@ -50,7 +50,10 @@ public class CBWebkitBridge: NSObject, WKScriptMessageHandler {
   
   public func dispatchToJs(msg: CBWBMessage) {
     let js = "cbWebKitBridge.dispatch(`\(msg.description)`)";
-    webview.evaluateJavaScript(js, completionHandler: nil);
+    
+    DispatchQueue.main.async {
+      self.webview.evaluateJavaScript(js, completionHandler: nil);
+    }
   }
   
   public func log(_ message: Any...) {
