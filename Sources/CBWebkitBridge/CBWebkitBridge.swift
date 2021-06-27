@@ -78,6 +78,8 @@ public class CBWebkitBridge: NSObject, WKScriptMessageHandler {
         return;
       }
       
+      responseContinuations[responseId] = nil;
+      
       // error 转换
       guard let error = msg.data["error"].string else {
         continuation.resume(throwing: CBWBError(error: "invalid response data"))

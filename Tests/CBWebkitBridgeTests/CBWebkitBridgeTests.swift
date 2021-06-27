@@ -2,9 +2,11 @@ import XCTest
 import SwiftyJSON
 import JavaScriptCore
 @testable import CBWebkitBridge
+import WebKit
 
+@available(iOS 15.0, *)
 final class CBWebkitBridgeTests: XCTestCase {
-  func testJSON() {
+  func testJSON() async {
     
   }
   
