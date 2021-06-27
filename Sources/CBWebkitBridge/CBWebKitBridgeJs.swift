@@ -31,10 +31,11 @@ class CBWebKitBridge {
             data,
             callbackId
         };
-        this.postMessage(message);
-        return new Promise((resolve, reject) => {
+        const task = new Promise((resolve, reject) => {
             this.responseHandlers[callbackId] = { resolve, reject };
         });
+        this.postMessage(message);
+        return task;
     }
     // 这里的 handler 名称 __cbwbjsmessagehandler__ 必须与 native 端注册的名称保持一致
     postMessage(message) {
@@ -57,6 +58,7 @@ class CBWebKitBridge {
                 this.log("no callback from js with id", msg.responseId);
                 return;
             }
+            this.responseHandlers[msg.responseId] = undefined;
             let { resolve, reject } = cb;
             const { error = "", data = {} } = msg.data;
             if (!error) {
