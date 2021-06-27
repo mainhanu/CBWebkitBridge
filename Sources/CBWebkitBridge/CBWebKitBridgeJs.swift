@@ -8,6 +8,7 @@
 
 import Foundation
 
+@available(iOS 15.0, *)
 extension CBWebkitBridge {
 public static let jsScript = """
 "use strict";
