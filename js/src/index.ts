@@ -1,1 +1,5 @@
-export { CBWebKitBridge } from './bridge'
+import { CBWebKitBridge } from './bridge'
+
+const cbWebKitBridge = new CBWebKitBridge;
+
+export { cbWebKitBridge };

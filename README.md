@@ -1,3 +1,6 @@
 # CBWebkitBridge
 
-A description of this package.
+## 更新 js
+```bash
+cd js && yarn js
+```
