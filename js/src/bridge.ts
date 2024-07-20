@@ -8,23 +8,41 @@ interface Message {
 export class CBWebKitBridge {
   private messageHandlers: Record<string, Function> = {}
   private responseCallbacks: Record<string, Function> = {}
+  private responseResolvers: Record<string, { resolve: Function, reject: Function}> = {};
   isDebug = true;
   private uniqueId = 0;
 
   register(name: string, handle: Function) {
     this.messageHandlers[name] = handle;
   }
-  call(name: string, data: any, callback: Function) {
+  call(name: string, data?: any, callback?: Function) {
     let message: Message = {
       handlerName: name,
       data,
     };
     if (callback) {
-      let callbackId = `js_cb_${this.uniqueId++}_${+Date.now()}`;
+      let callbackId = this.generateResponseId('callback');
       this.responseCallbacks[callbackId] = callback;
       message.callbackId = callbackId;
     }
     this.postMessage(message);
+  }
+  callAsync(name: string, data?: any, timeout = 1000 * 30) {
+    let message: Message = {
+      handlerName: name,
+      data,
+    };
+
+    let r: { resolve: Function, reject: Function} = { resolve: () => {}, reject: () => {}}
+    Promise.race([
+      new Promise((resolve, reject) => {
+        r.resolve = resolve; 
+        r.reject = reject;
+      }),
+      new Promise((_, reject) => setTimeout(() => reject(Error('timeout')), timeout)),
+    ]);
+    let id = this.generateResponseId('promise');
+    this.responseResolvers[id] = r;
   }
   // native 调用
   dispatch(msgStr: string) {
@@ -38,16 +56,30 @@ export class CBWebKitBridge {
 
     // 如果有 responseId，表示是 js 端触发的异步任务，native 端执行完成后触发结果 callback
     if (msg.responseId) {
-      let cb = this.responseCallbacks[msg.responseId];
-      if (!cb) {
-        this.log("no callback from js with id", msg.responseId);
-        return;
-      }
+      const type = this.getResponseType(msg.responseId);
       const { error = "", data = {} } = msg.data;
-      if (!error) {
-        cb(null, data);
-      } else {
-        cb(Error(error), data);
+      if (type === 'callback') {
+        let cb = this.responseCallbacks[msg.responseId];
+        if (!cb) {
+          this.log("no callback from js with id", msg.responseId);
+          return;
+        }
+        if (!error) {
+          cb(null, data);
+        } else {
+          cb(Error(error), data);
+        }
+      } else if (type === 'promise') {
+        let prs = this.responseResolvers[msg.responseId];
+        if (!prs) {
+          this.log("no resolver from js with id", msg.responseId);
+          return;
+        }
+        if (!error) {
+          prs.resolve(data);
+        } else {
+          prs.reject(Error(error));
+        }
       }
       return;
     }
@@ -70,6 +102,20 @@ export class CBWebKitBridge {
         });
       }
     });
+  }
+
+  private generateResponseId(type: 'callback' | 'promise') {
+    return `js_${type}_${this.uniqueId++}_${+Date.now()}`;
+  }
+
+  private getResponseType(id: string): 'callback' | 'promise' | undefined {
+    const prefixes = ['callback', 'promise'];
+    for (let prefix of prefixes) {
+      if (id.startsWith(`js_${prefix}`)) {
+        return prefix as any;
+      }
+    }
+    return undefined;
   }
 
   // 这里的 handler 名称 __cbwbjsmessagehandler__ 必须与 native 端注册的名称保持一致
