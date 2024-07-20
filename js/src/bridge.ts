@@ -28,9 +28,12 @@ export class CBWebKitBridge {
     this.postMessage(message);
   }
   callAsync(name: string, data?: any, timeout = 1000 * 30) {
+    let callbackId = this.generateResponseId('promise');
+
     let message: Message = {
       handlerName: name,
       data,
+      callbackId,
     };
 
     let r: { resolve: Function, reject: Function} = { resolve: () => {}, reject: () => {}}
@@ -41,8 +44,8 @@ export class CBWebKitBridge {
       }),
       new Promise((_, reject) => setTimeout(() => reject(Error('timeout')), timeout)),
     ]);
-    let id = this.generateResponseId('promise');
-    this.responseResolvers[id] = r;
+    this.responseResolvers[callbackId] = r;
+    this.postMessage(message);
   }
   // native 调用
   dispatch(msgStr: string) {
