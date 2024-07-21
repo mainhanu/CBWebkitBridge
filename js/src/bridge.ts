@@ -37,7 +37,7 @@ export class CBWebKitBridge {
     };
 
     let r: { resolve: Function, reject: Function} = { resolve: () => {}, reject: () => {}}
-    Promise.race([
+    const p = Promise.race([
       new Promise((resolve, reject) => {
         r.resolve = resolve; 
         r.reject = reject;
@@ -46,6 +46,7 @@ export class CBWebKitBridge {
     ]);
     this.responseResolvers[callbackId] = r;
     this.postMessage(message);
+    return p;
   }
   // native 调用
   dispatch(msgStr: string) {
