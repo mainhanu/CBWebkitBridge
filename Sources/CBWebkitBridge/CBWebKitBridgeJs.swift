@@ -3,7 +3,197 @@ import Foundation
 
 extension CBWebkitBridge {
 public static let jsScript = """
-!function(e,t){if("object"==typeof exports&&"object"==typeof module)module.exports=t();else if("function"==typeof define&&define.amd)define([],t);else{var r=t();for(var o in r)("object"==typeof exports?exports:e)[o]=r[o]}}(self,(function(){return function(){var e={608:function(e){e.exports=function(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")},e.exports.__esModule=!0,e.exports.default=e.exports},218:function(e,t,r){var o=r(108);function n(e,t){for(var r=0;r<t.length;r++){var n=t[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(e,o(n.key),n)}}e.exports=function(e,t,r){return t&&n(e.prototype,t),r&&n(e,r),Object.defineProperty(e,"prototype",{writable:!1}),e},e.exports.__esModule=!0,e.exports.default=e.exports},51:function(e,t,r){var o=r(108);e.exports=function(e,t,r){return(t=o(t))in e?Object.defineProperty(e,t,{value:r,enumerable:!0,configurable:!0,writable:!0}):e[t]=r,e},e.exports.__esModule=!0,e.exports.default=e.exports},875:function(e,t,r){var o=r(191).default;e.exports=function(e,t){if("object"!=o(e)||!e)return e;var r=e[Symbol.toPrimitive];if(void 0!==r){var n=r.call(e,t||"default");if("object"!=o(n))return n;throw new TypeError("@@toPrimitive must return a primitive value.")}return("string"===t?String:Number)(e)},e.exports.__esModule=!0,e.exports.default=e.exports},108:function(e,t,r){var o=r(191).default,n=r(875);e.exports=function(e){var t=n(e,"string");return"symbol"==o(t)?t:String(t)},e.exports.__esModule=!0,e.exports.default=e.exports},191:function(e){function t(r){return e.exports=t="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e},e.exports.__esModule=!0,e.exports.default=e.exports,t(r)}e.exports=t,e.exports.__esModule=!0,e.exports.default=e.exports}},t={};function r(o){var n=t[o];if(void 0!==n)return n.exports;var s=t[o]={exports:{}};return e[o](s,s.exports,r),s.exports}r.n=function(e){var t=e&&e.__esModule?function(){return e.default}:function(){return e};return r.d(t,{a:t}),t},r.d=function(e,t){for(var o in t)r.o(t,o)&&!r.o(e,o)&&Object.defineProperty(e,o,{enumerable:!0,get:t[o]})},r.o=function(e,t){return Object.prototype.hasOwnProperty.call(e,t)},r.r=function(e){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})};var o={};return function(){"use strict";r.r(o),r.d(o,{cbWebKitBridge:function(){return l}});var e=r(608),t=r.n(e),n=r(218),s=r.n(n),i=r(51),a=r.n(i),u=function(){function e(){t()(this,e),a()(this,"messageHandlers",{}),a()(this,"responseCallbacks",{}),a()(this,"responseResolvers",{}),a()(this,"isDebug",!0),a()(this,"uniqueId",0)}return s()(e,[{key:"register",value:function(e,t){this.messageHandlers[e]=t}},{key:"call",value:function(e,t,r){var o={handlerName:e,data:t};if(r){var n=this.generateResponseId("callback");this.responseCallbacks[n]=r,o.callbackId=n}this.postMessage(o)}},{key:"callAsync",value:function(e,t){var r=arguments.length>2&&void 0!==arguments[2]?arguments[2]:3e4,o=this.generateResponseId("promise"),n={handlerName:e,data:t,callbackId:o},s={resolve:function(){},reject:function(){}},i=Promise.race([new Promise((function(e,t){s.resolve=e,s.reject=t})),new Promise((function(e,t){return setTimeout((function(){return t(Error("timeout"))}),r)}))]);return this.responseResolvers[o]=s,this.postMessage(n),i}},{key:"dispatch",value:function(e){var t,r=this;try{t=JSON.parse(decodeURIComponent(atob(e)))}catch(e){return void this.log("[invalid json msg from native]".concat(e.message))}if(t.responseId){var o=this.getResponseType(t.responseId),n=t.data,s=n.error,i=void 0===s?"":s,a=n.data,u=void 0===a?{}:a;if("callback"===o){var l=this.responseCallbacks[t.responseId];if(!l)return void this.log("no callback from js with id",t.responseId);l(i?Error(i):null,u)}else if("promise"===o){var c=this.responseResolvers[t.responseId];if(!c)return void this.log("no resolver from js with id",t.responseId);i?c.reject(Error(i)):c.resolve(u)}}else{var f=t,p=f.handlerName,d=f.data,v=f.callbackId,b=this.messageHandlers[p];b?b(d,(function(e,t){v&&r.postMessage({responseId:v,data:{error:e||"",data:t}})})):this.log("no handler named",p)}}},{key:"generateResponseId",value:function(e){return"js_".concat(e,"_").concat(this.uniqueId++,"_").concat(+Date.now())}},{key:"getResponseType",value:function(e){for(var t=0,r=["callback","promise"];t<r.length;t++){var o=r[t];if(e.startsWith("js_".concat(o)))return o}}},{key:"postMessage",value:function(e){window.webkit.messageHandlers.__cbwbjsmessagehandler__.postMessage(JSON.stringify(e))}},{key:"log",value:function(){var e;this.isDebug&&(e=console).log.apply(e,arguments)}}]),e}(),l=new u}(),o}()})); 
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define([], factory);
+	else {
+		var a = factory();
+		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
+	}
+})(self, function() {
+return /******/ (function() { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	// The require scope
+/******/ 	var __webpack_require__ = {};
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	!function() {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = function(exports, definition) {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	}();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	!function() {
+/******/ 		__webpack_require__.o = function(obj, prop) { return Object.prototype.hasOwnProperty.call(obj, prop); }
+/******/ 	}();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	!function() {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = function(exports) {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	}();
+/******/ 	
+/************************************************************************/
+var __webpack_exports__ = {};
+// ESM COMPAT FLAG
+__webpack_require__.r(__webpack_exports__);
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  cbWebKitBridge: function() { return /* binding */ cbWebKitBridge; }
+});
+
+;// CONCATENATED MODULE: ./src/bridge.ts
+class CBWebKitBridge {
+  messageHandlers = {};
+  responseCallbacks = {};
+  responseResolvers = {};
+  isDebug = true;
+  uniqueId = 0;
+  register(name, handle) {
+    this.messageHandlers[name] = handle;
+  }
+  call(name, data, callback) {
+    let message = {
+      handlerName: name,
+      data
+    };
+    if (callback) {
+      let callbackId = this.generateResponseId('callback');
+      this.responseCallbacks[callbackId] = callback;
+      message.callbackId = callbackId;
+    }
+    this.postMessage(message);
+  }
+  callAsync(name, data, timeout = 1000 * 30) {
+    let callbackId = this.generateResponseId('promise');
+    let message = {
+      handlerName: name,
+      data,
+      callbackId
+    };
+    let r = {
+      resolve: () => {},
+      reject: () => {}
+    };
+    const p = Promise.race([new Promise((resolve, reject) => {
+      r.resolve = resolve;
+      r.reject = reject;
+    }), new Promise((_, reject) => setTimeout(() => reject(Error('timeout')), timeout))]);
+    this.responseResolvers[callbackId] = r;
+    this.postMessage(message);
+    return p;
+  }
+  // native 调用
+  dispatch(msgStr) {
+    let msg;
+    try {
+      msg = JSON.parse(decodeURIComponent(atob(msgStr)));
+    } catch (e) {
+      this.log(`[invalid json msg from native]${e.message}`);
+      return;
+    }
+
+    // 如果有 responseId，表示是 js 端触发的异步任务，native 端执行完成后触发结果 callback
+    if (msg.responseId) {
+      const type = this.getResponseType(msg.responseId);
+      const {
+        error = "",
+        data = {}
+      } = msg.data;
+      if (type === 'callback') {
+        let cb = this.responseCallbacks[msg.responseId];
+        if (!cb) {
+          this.log("no callback from js with id", msg.responseId);
+          return;
+        }
+        if (!error) {
+          cb(null, data);
+        } else {
+          cb(Error(error), data);
+        }
+      } else if (type === 'promise') {
+        let prs = this.responseResolvers[msg.responseId];
+        if (!prs) {
+          this.log("no resolver from js with id", msg.responseId);
+          return;
+        }
+        if (!error) {
+          prs.resolve(data);
+        } else {
+          prs.reject(Error(error));
+        }
+      }
+      return;
+    }
+
+    // 如果有 callbackId，表示是客户端调用 js 端，执行 js 端 handler，并将数据异步返回
+    let {
+      handlerName,
+      data,
+      callbackId
+    } = msg;
+    let handler = this.messageHandlers[handlerName];
+    if (!handler) {
+      this.log("no handler named", handlerName);
+      return;
+    }
+    handler(data, (error, result) => {
+      if (callbackId) {
+        this.postMessage({
+          responseId: callbackId,
+          data: {
+            error: error || "",
+            data: result
+          }
+        });
+      }
+    });
+  }
+  generateResponseId(type) {
+    return `js_${type}_${this.uniqueId++}_${+Date.now()}`;
+  }
+  getResponseType(id) {
+    const prefixes = ['callback', 'promise'];
+    for (let prefix of prefixes) {
+      if (id.startsWith(`js_${prefix}`)) {
+        return prefix;
+      }
+    }
+    return undefined;
+  }
+
+  // 这里的 handler 名称 __cbwbjsmessagehandler__ 必须与 native 端注册的名称保持一致
+  postMessage(message) {
+    window.webkit.messageHandlers.__cbwbjsmessagehandler__.postMessage(JSON.stringify(message));
+  }
+  log(...params) {
+    if (!this.isDebug) return;
+    console.log(...params);
+  }
+}
+;// CONCATENATED MODULE: ./src/index.ts
+
+const cbWebKitBridge = new CBWebKitBridge();
+
+/******/ 	return __webpack_exports__;
+/******/ })()
+;
+}); 
 """
 }
 
