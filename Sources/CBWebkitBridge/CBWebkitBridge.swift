@@ -10,7 +10,7 @@ import WebKit
 import SwiftyJSON
 
 public class CBWebkitBridge: NSObject, WKScriptMessageHandler {
-    let webview: WKWebView!
+    unowned let webview: WKWebView?;
     var messageHandlers: [String: CBWBHandler] = [:]
     var responseCallbacks: [String: CBWBResponseCallback] = [:];
     var uniqueId = 0;
@@ -20,7 +20,7 @@ public class CBWebkitBridge: NSObject, WKScriptMessageHandler {
     public init(webview: WKWebView) {
         self.webview = webview;
         super.init();
-        self.config(userContentController: self.webview.configuration.userContentController);
+        self.config(userContentController: self.webview!.configuration.userContentController);
     }
     
     public func config(userContentController: WKUserContentController) {
@@ -48,7 +48,7 @@ public class CBWebkitBridge: NSObject, WKScriptMessageHandler {
     
     public func dispatchToJs(msg: CBWBMessage) {
         let js = "cbWebKitBridge.dispatch(`\(msg.description)`)";
-        webview.evaluateJavaScript(js, completionHandler: nil);
+        webview?.evaluateJavaScript(js, completionHandler: nil);
     }
     
     public func log(_ message: Any...) {
