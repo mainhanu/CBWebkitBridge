@@ -66,6 +66,9 @@ class CBWebKitBridge {
   uniqueId = 0;
   register(name, handle) {
     this.messageHandlers[name] = handle;
+    return () => {
+      delete this.messageHandlers[name];
+    };
   }
   call(name, data, callback) {
     let message = {

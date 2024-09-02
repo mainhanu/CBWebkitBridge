@@ -14,6 +14,10 @@ export class CBWebKitBridge {
 
   register(name: string, handle: Function) {
     this.messageHandlers[name] = handle;
+
+    return () => {
+      delete this.messageHandlers[name];
+    }
   }
   call(name: string, data?: any, callback?: Function) {
     let message: Message = {
