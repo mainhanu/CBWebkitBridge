@@ -14,17 +14,22 @@ public class CBWebkitBridge: NSObject, WKScriptMessageHandler {
     var messageHandlers: [String: CBWBHandler] = [:]
     var responseCallbacks: [String: CBWBResponseCallback] = [:];
     var uniqueId = 0;
-    var scrpitmessagename = "__cbwbjsmessagehandler__";
+    var scrpitmessagename: String;
     var isDebug = true;
+    var jsVariableName: String;
     
-    public init(webview: WKWebView) {
+    public init(webview: WKWebView, jsGlobalName: String = "cbWebKitBridge", jsScriptMessageHandlerName: String = "__cbwbjsmessagehandler__") {
         self.webview = webview;
+        self.jsVariableName = jsGlobalName;
+        self.scrpitmessagename = jsScriptMessageHandlerName;
         super.init();
         self.config(userContentController: self.webview!.configuration.userContentController);
     }
     
     public func config(userContentController: WKUserContentController) {
-        let bridgejs = CBWebkitBridge.jsScript;
+      let bridgejs = CBWebkitBridge.jsScript
+        .replacingOccurrences(of: "__PLACEHOLDER__GLOBALNAME__", with: self.jsVariableName)
+        .replacingOccurrences(of: "__PLACEHOLDER__HANLDERNAME__", with: self.scrpitmessagename);
         let userscript = WKUserScript(source: bridgejs, injectionTime: .atDocumentStart, forMainFrameOnly: true);
         
         userContentController.addUserScript(userscript);
@@ -47,7 +52,7 @@ public class CBWebkitBridge: NSObject, WKScriptMessageHandler {
     }
     
     public func dispatchToJs(msg: CBWBMessage) {
-        let js = "cbWebKitBridge.dispatch(`\(msg.description)`)";
+        let js = "\(jsVariableName).dispatch(`\(msg.description)`)";
         webview?.evaluateJavaScript(js, completionHandler: nil);
     }
     

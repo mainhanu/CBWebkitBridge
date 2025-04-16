@@ -1,5 +1,6 @@
 {
-  "name": "cbWebkitBridge",
+  "name": "cbwebkitbridge",
+  "private": true,
   "version": "0.0.1",
   "description": "",
   "module": "dist/esm/index.js",
@@ -9,7 +10,7 @@
     "build": "father build",
     "build:deps": "father prebundle",
     "prepublishOnly": "father doctor && npm run build",
-    "js": "npm run build && node scripts.mjs"
+    "build:swift": "npm run build && node scripts.mjs"
   },
   "keywords": [],
   "authors": [

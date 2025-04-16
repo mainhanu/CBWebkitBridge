@@ -12,6 +12,8 @@ export class CBWebKitBridge {
   isDebug = true;
   private uniqueId = 0;
 
+  constructor(private messageHandlerName: string) {}
+
   register(name: string, handle: Function) {
     this.messageHandlers[name] = handle;
 
@@ -126,9 +128,8 @@ export class CBWebKitBridge {
     return undefined;
   }
 
-  // 这里的 handler 名称 __cbwbjsmessagehandler__ 必须与 native 端注册的名称保持一致
   private postMessage(message: Message) {
-    (window as any).webkit.messageHandlers.__cbwbjsmessagehandler__.postMessage(
+    (window as any).webkit.messageHandlers[this.messageHandlerName].postMessage(
       JSON.stringify(message)
     );
   }

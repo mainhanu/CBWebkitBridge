@@ -1,5 +1,3 @@
 import { CBWebKitBridge } from './bridge'
 
-const cbWebKitBridge = new CBWebKitBridge;
-
-export { cbWebKitBridge };
+(window as any)["__PLACEHOLDER__GLOBALNAME__"] = new CBWebKitBridge("__PLACEHOLDER__HANLDERNAME__")

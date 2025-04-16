@@ -2,5 +2,5 @@
 
 ## 更新 js
 ```bash
-cd js && yarn js
+cd js && npm run build:swift
 ```
