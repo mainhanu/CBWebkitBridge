@@ -26,7 +26,7 @@ public class CBWebkitBridge: NSObject, WKScriptMessageHandler {
         self.config(userContentController: self.webview!.configuration.userContentController);
     }
     
-    public func config(userContentController: WKUserContentController) {
+    private func config(userContentController: WKUserContentController) {
       let bridgejs = CBWebkitBridge.jsScript
         .replacingOccurrences(of: "__PLACEHOLDER__GLOBALNAME__", with: self.jsVariableName)
         .replacingOccurrences(of: "__PLACEHOLDER__HANLDERNAME__", with: self.scrpitmessagename);
@@ -51,7 +51,7 @@ public class CBWebkitBridge: NSObject, WKScriptMessageHandler {
         self.dispatchToJs(msg: msg);
     }
     
-    public func dispatchToJs(msg: CBWBMessage) {
+    private func dispatchToJs(msg: CBWBMessage) {
         let js = "\(jsVariableName).dispatch(`\(msg.description)`)";
         webview?.evaluateJavaScript(js, completionHandler: nil);
     }
@@ -65,6 +65,11 @@ public class CBWebkitBridge: NSObject, WKScriptMessageHandler {
     
     // MARK: - WKScriptMessageHandler
     public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+        if message.frameInfo.isMainFrame == false {
+            log("receive message from non-main frame, ignore");
+            return;
+        }
+
         if message.name != scrpitmessagename {
             log("receive invalid WKScriptMessage, name: \(message.name)")
             return;
