@@ -30,10 +30,16 @@ public struct CBWBMessage: CustomStringConvertible {
     result["callbackId"].string = callbackId;
     result["responseId"].string = responseId;
     result["data"] = data;
-    
-    let rawString = encodeJSON(result.rawString([.castNilToNSNull: true])!)
-    
-    return rawString.encodeURIComponent()!.base64()!
+
+    // 用 JSONSerialization 路径（options: [] 紧凑输出，无嵌套深度限制）；
+    // 不能用 rawString([.castNilToNSNull: true])——那条手写路径 maxObjectDepth 默认 10，
+    // 深层嵌套（如带 media 缩略图的 websearch 结果）会返回 nil，强解包导致 crash。
+    guard let raw = result.rawString(options: []),
+          let encoded = encodeJSON(raw).encodeURIComponent()?.base64() else {
+      return "";
+    }
+
+    return encoded;
   }
   
   public init(type: CBWBMessageType, handlerName: String?, data: JSON, callbackId: String?, responseId: String?) {
