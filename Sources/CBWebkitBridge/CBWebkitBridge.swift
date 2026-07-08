@@ -50,6 +50,22 @@ public class CBWebkitBridge: NSObject, WKScriptMessageHandler {
         let msg = CBWBMessage(type: .handler, handlerName: name, data: data, callbackId: callbackId, responseId: nil);
         self.dispatchToJs(msg: msg);
     }
+
+    /// `call` 的 async/await 版本：在现有 callback 机制之上封装，
+    /// JS 返回错误时抛出 `CBWBError`，否则返回结果 `JSON`。
+    @available(iOS 13.0, macOS 10.15, watchOS 6.0, tvOS 13.0, *)
+    @MainActor
+    public func callAsync(name: String, data: JSON) async throws -> JSON? {
+        return try await withCheckedThrowingContinuation { continuation in
+            self.call(name: name, data: data) { error, result in
+                if let error = error {
+                    continuation.resume(throwing: error);
+                    return;
+                }
+                continuation.resume(returning: result);
+            }
+        }
+    }
     
     private func dispatchToJs(msg: CBWBMessage) {
         let js = "\(jsVariableName).dispatch(`\(msg.description)`)";
